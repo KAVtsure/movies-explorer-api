@@ -1,36 +1,18 @@
 const Movie = require('../models/movie');
 const IncorrectReqDataError = require('../utils/IncorrectReqDataError');
-const ServerError = require('../utils/ServerError');
 const NotFoundError = require('../utils/NotFoundError');
 const MovieDeleteError = require('../utils/MovieDeleteError');
 
 const createMovie = async (req, res, next) => {
-  const {
-    country, director, duration, year, description, image, trailerLink, nameRU, nameEN,
-    thumbnail, movieId,
-  } = req.body;
   const owner = req.user._id;
   try {
-    const movie = await Movie.create({
-      country,
-      director,
-      duration,
-      year,
-      description,
-      image,
-      trailerLink,
-      nameRU,
-      nameEN,
-      thumbnail,
-      movieId,
-      owner,
-    });
+    const movie = await Movie.create({ ...req.body, owner });
     res.send(movie);
   } catch (e) {
     if (e.name === 'ValidationError') {
       next(new IncorrectReqDataError('Переданы некорректные данные при создании фильма'));
     } else {
-      next(new ServerError('Ошибка по умолчанию'));
+      next(e);
     }
   }
 };
@@ -41,7 +23,7 @@ const getMovie = async (req, res, next) => {
     const movies = await Movie.find({ owner });
     res.send(movies);
   } catch (e) {
-    next(new ServerError('Ошибка по умолчанию'));
+    next(e);
   }
 };
 
@@ -63,7 +45,7 @@ const deleteMovie = async (req, res, next) => {
     if (e.name === 'CastError') {
       next(new IncorrectReqDataError('Невалидный ID фильма'));
     } else {
-      next(new ServerError('Ошибка по умолчанию'));
+      next(e);
     }
   }
 };

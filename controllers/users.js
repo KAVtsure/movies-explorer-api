@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const IncorrectReqDataError = require('../utils/IncorrectReqDataError');
 const EmailExistingError = require('../utils/EmailExistingError');
-const ServerError = require('../utils/ServerError');
 const NotFoundError = require('../utils/NotFoundError');
 const AuthError = require('../utils/AuthError');
 
@@ -27,7 +26,7 @@ const createUser = async (req, res, next) => {
     if (e.name === 'ValidationError') {
       next(new IncorrectReqDataError('Переданы некорректные данные при создании пользователя'));
     } else {
-      next(new ServerError('Ошибка по умолчанию'));
+      next(e);
     }
   }
 };
@@ -44,7 +43,7 @@ const getCurrentUser = async (req, res, next) => {
     if (e.kind === 'ObjectId') {
       next(new IncorrectReqDataError('Невалидный ID пользователя'));
     } else {
-      next(new ServerError('Ошибка по умолчанию'));
+      next(e);
     }
   }
 };
@@ -64,10 +63,14 @@ const updateUserProfile = async (req, res, next) => {
     }
     res.send(user);
   } catch (e) {
+    if (e.code === 11000) {
+      next(new EmailExistingError('Пользователь с таким email уже существует'));
+      return;
+    }
     if (e.name === 'ValidationError') {
       next(new IncorrectReqDataError('Переданы некорректные данные при обновлении профиля'));
     } else {
-      next(new ServerError('Ошибка по умолчанию'));
+      next(e);
     }
   }
 };
@@ -94,13 +97,12 @@ const login = async (req, res, next) => {
         sameSite: true,
         secure: true,
       })
-      .send({ token })
-      .end();
+      .send({ token });
   } catch (e) {
     if (e.kind === 'ObjectId') {
       next(new IncorrectReqDataError('Невалидный ID пользователя'));
     } else {
-      next(new ServerError('Ошибка по умолчанию'));
+      next(e);
     }
   }
 };

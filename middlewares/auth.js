@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
   let payload;
   try {
     if (!token) {
-      next(new AuthError('Передан неверный JWT'));
+      next(new AuthError('JWT не передан'));
       return;
     }
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
