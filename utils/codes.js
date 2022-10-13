@@ -1,0 +1,8 @@
+const INCORRECT_REQ_DATA = 400;
+const DATA_NOT_FOUND = 404;
+const ERROR_SERVER = 500;
+const RES_OK = 200;
+
+module.exports = {
+  INCORRECT_REQ_DATA, DATA_NOT_FOUND, ERROR_SERVER, RES_OK,
+};
