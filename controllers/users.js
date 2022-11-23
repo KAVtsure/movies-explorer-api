@@ -94,7 +94,7 @@ const login = async (req, res, next) => {
       .cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
-        sameSite: true,
+        sameSite: 'none',
         secure: true,
       })
       .send({ token });
@@ -107,6 +107,10 @@ const login = async (req, res, next) => {
   }
 };
 
+function logout(req, res) {
+  res.clearCookie('jwt').send({ message: 'Выход' });
+}
+
 module.exports = {
-  getCurrentUser, createUser, updateUserProfile, login,
+  getCurrentUser, createUser, updateUserProfile, login, logout,
 };

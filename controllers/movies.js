@@ -40,7 +40,8 @@ const deleteMovie = async (req, res, next) => {
       return;
     }
     await Movie.deleteOne(movie);
-    res.send({ message: 'фильм успешно удален' });
+    // res.send({ message: 'фильм успешно удален' });
+    res.send(movie);
   } catch (e) {
     if (e.name === 'CastError') {
       next(new IncorrectReqDataError('Невалидный ID фильма'));
