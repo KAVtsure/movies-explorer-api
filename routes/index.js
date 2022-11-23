@@ -17,9 +17,11 @@ routes.use(auth);
 routes.use('/users', userRoutes);
 routes.use('/movies', movieRoutes);
 
-routes.get('/signout', (req, res) => {
+routes.post('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Выход' });
 });
+
+// routes.post('/signout', logout);
 
 routes.use('*', (req, res, next) => {
   next(new NotFoundError('Запрашиваемая страница не найдена'));

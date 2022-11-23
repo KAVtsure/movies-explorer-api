@@ -8,6 +8,8 @@ const allowedCors = [
   'http://movies.kavtsure.nomoredomains.icu',
   'https://api.movies.kavtsure.nomoredomains.icu',
   'http://api.movies.kavtsure.nomoredomains.icu',
+  'https://localhost:4000',
+  'http://localhost:4000',
 ];
 
 const cors = (req, res, next) => {
